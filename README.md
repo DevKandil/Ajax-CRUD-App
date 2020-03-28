@@ -1,2 +1,2 @@
 # Ajax-CRUD-App
-Simple Car Inventory CRUD Application
+Simple Cars CRUD Application
