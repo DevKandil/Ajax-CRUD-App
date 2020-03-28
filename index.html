@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cars Shop</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" ></script>
+    <style>
+        /* * {
+            outline: red solid 1px;
+        } */
+    </style>
+    <script>
+
+        $(document).ready(function () {
+
+            
+
+            setInterval(function () {
+                showCars();
+            }, 500);
+
+
+
+            $('#search').keyup(function () {
+                var search = $('#search').val();
+                
+                $.ajax({
+                    type:'POST',
+                    url: 'search.php',
+                    data: {search:search},
+                    success: function (data) {
+                        if (!data.error) {
+                            $('#result').html(data);
+                        }
+                    }
+                });
+            });
+
+
+
+            $('#add-car-form').submit(function (e) {
+                e.preventDefault();
+                var postData = $(this).serialize();
+                var url = $(this).attr('action');
+                
+                $.post(url, postData, function (php_table_data) {
+                    
+                    $('#car-result').html(php_table_data).addClass('alert alert-primary');
+                    $('#add-car-form')[0].reset();
+
+                });
+            });
+
+
+            function showCars() {
+                
+                $.ajax({
+                    type: "POST",
+                    url: "display_cars.php",
+                    success: function (show_cars) {
+                        if (!show_cars.error) {
+                            $('#show-cars').html(show_cars);
+                        }
+                    } 
+                });
+            }
+
+            
+
+
+            
+        });
+
+    </script>
+</head>
+<body>
+        <div id="container" class="col-sm-5 text-center mx-auto">
+
+
+            <div class="row mx-auto">
+                <br>
+                <h2>Search Our DataBase</h2>
+                <input class="form-control" type="text" name="search" id="search" placeholder="Search Cars">
+                <br>
+                <br>
+                <h3 class="bg-light" id="result"></h3>
+                <br>
+            </div>
+            <hr>
+
+
+            <div class="row mx-auto">
+                <form id="add-car-form" action="add_cars.php" method="POST" class="col-sm-12 mx-auto">
+                    <h2>Add Cars to Database</h2>
+                    <div class="form-group">
+                        <input type="text" name="car_name" class="form-control" placeholder="Car Name">
+                    </div>
+                    <div class="form-group">
+                        <input type="submit" value="Add Car" class="btn btn-primary">
+                    </div>
+                    <div class="form-group">
+                        <div id="car-result" class="">
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <h3>Our Cars</h3> <br>
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                            </tr>
+                        </thead>
+                        <tbody id="show-cars"></tbody>
+                    </table>
+                </div>
+
+                <div class="col-sm-6">
+                    <div id="action-container"></div>
+                    
+                </div>
+
+            </div>
+        </div>
+
+        
+
+        
+</body>
+</html>
